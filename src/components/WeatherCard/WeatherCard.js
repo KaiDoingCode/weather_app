@@ -5,8 +5,7 @@ import {
     MDBCol,
     MDBContainer,
     MDBRow,
-    MDBTypography,
-    MDBIcon
+    MDBTypography
 } from "mdb-react-ui-kit";
 import Badge from 'react-bootstrap/Badge';
 
