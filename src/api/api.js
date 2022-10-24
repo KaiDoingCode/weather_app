@@ -5,4 +5,4 @@ export const api = axios.create({
     timeout: 6000,
 });
 
-export const apiKey = 'LTCkk7NjinGdLl99wwhAeEHNn9TT2uOx';
+export const apiKey = 'ybjAX5SNI9XPomXGhDArxkcEjYaMIHk8';
