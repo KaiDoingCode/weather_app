@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-    baseURL: 'http://dataservice.accuweather.com',
+    baseURL: 'https://dataservice.accuweather.com',
     timeout: 6000,
 });
 
