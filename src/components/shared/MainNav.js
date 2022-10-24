@@ -18,25 +18,36 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import Button from "./Button";
 import Moment from "react-moment";
+import LoadingSpinner from './LoadingSpinner';
+import ErrorModal from './ErrorModal';
 
 const MainNav = () => {
   const [geography, setGeoGraphy] = useState(null);
   const [showBasic, setShowBasic] = useState(false);
   const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const getLocation = async (latitude, longitude) => {
-    const location = await api.get(`/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${latitude},${longitude}`);
-    if(location){
-      const weatherInfo = await api.get(`/forecasts/v1/daily/1day/${location.data.Key}?apikey=${apiKey}`);
-        if(weatherInfo){
-          setWeather(weatherInfo.data);
-        }
-      setGeoGraphy({...geography, location: location});
-     
+    try{
+      const location = await api.get(`/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${latitude},${longitude}`);
+      if(location){
+        const weatherInfo = await api.get(`/forecasts/v1/daily/1day/${location.data.Key}?apikey=${apiKey}`);
+          if(weatherInfo){
+            setWeather(weatherInfo.data);
+          }
+        setGeoGraphy({...geography, location: location});
+        setLoading(false);
+      }
+    } catch(e){
+      setLoading(false);
+      setError(e)
     }
+    
   }
 
   const getCurrentLocation = (e) => {
+    setLoading(true);
     e.preventDefault();
     
     if(navigator && navigator.geolocation){
@@ -54,6 +65,10 @@ const MainNav = () => {
 
   return (
     <MDBNavbar expand='lg' light bgColor='light'>
+      {loading && <LoadingSpinner />}
+      {error && <ErrorModal error={error} handleClose={() => {
+        setError(null);
+      }} />}
       <MDBContainer fluid>
         <MDBNavbarBrand><strong>Weather App</strong></MDBNavbarBrand>
 
@@ -109,7 +124,7 @@ const MainNav = () => {
             </MDBNavbarNav>
           </form> : 
           <form className='d-flex input-group w-auto'>
-            <Button type='primary' onClick={getCurrentLocation}>Get Your Location</Button>
+            <Button disabled={loading} type='primary' onClick={getCurrentLocation}>Get Your Location</Button>
           </form>
           }
           
